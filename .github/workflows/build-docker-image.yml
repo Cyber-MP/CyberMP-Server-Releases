@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/server
+  IMAGE_NAME: ghcr.io/cyber-mp/server
 
 permissions:
   packages: write
