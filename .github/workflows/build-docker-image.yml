@@ -10,6 +10,10 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: cybermp/server
 
+permissions:
+  packages: write
+  artifact-metadata: write
+
 jobs:
   push:
     runs-on: ubuntu-latest
