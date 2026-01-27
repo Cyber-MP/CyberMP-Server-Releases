@@ -8,12 +8,14 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/cyber-mp/server
+  IMAGE_NAME: cyber-mp/server
 
 permissions:
   packages: write
   artifact-metadata: write
   contents: read
+  id-token: write
+  attestations: write
 
 jobs:
   push:
@@ -39,19 +41,37 @@ jobs:
 
           unzip "cybermp-server-linux-build*" -d linux-build
 
-      - name: Verify files
-        run: ls -R linux-build && ls
-
-      - name: Login to Docker Hub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Extract Metadata and Strip "v" prefix
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # Strips the 'v' from the release tag (e.g., v1.0.0 -> 1.0.0)
+            type=raw,value=${{ steps.download_release.outputs.tag_name }},enable=true,priority=1000,suffix=,prefix=,strip=v
+            type=raw,value=latest
+
       - name: Build and push Docker image
+        id: push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_NAME }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      # Generate Artifact Attestation
+      # - name: Generate artifact attestation
+      #   uses: actions/attest-build-provenance@v1
+      #   with:
+      #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      #     subject-digest: ${{ steps.push.outputs.digest }}
+      #     push-to-registry: true
