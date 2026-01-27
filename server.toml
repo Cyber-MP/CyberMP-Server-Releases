@@ -1,0 +1,11 @@
+tcp_host = "0.0.0.0:2077"
+udp_host = "0.0.0.0:2077"
+
+connection_host_addr = "127.0.0.1:2077"
+max_players = 20
+
+resources = []
+
+disable_VoIP_server = false
+
+steam_api_key = "none"

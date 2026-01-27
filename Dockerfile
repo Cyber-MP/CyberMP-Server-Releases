@@ -21,4 +21,7 @@ WORKDIR /cybermp
 COPY ./linux-build /cybermp
 RUN chmod +x /cybermp/cybermp-server
 
+COPY ./server.toml /cybermp/server.toml
+RUN mkdir /cybermp/resources
+
 CMD ["./cybermp-server", "-run"]
