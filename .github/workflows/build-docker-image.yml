@@ -13,6 +13,7 @@ env:
 permissions:
   packages: write
   artifact-metadata: write
+  contents: read
 
 jobs:
   push:
