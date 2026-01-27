@@ -55,8 +55,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            # Strips the 'v' from the release tag (e.g., v1.0.0 -> 1.0.0)
-            type=raw,value=${{ steps.download_release.outputs.tag_name }},enable=true,priority=1000,suffix=,prefix=,strip=v
+            type=match,pattern=v(.*),group=1,value=${{ steps.download_release.outputs.tag_name }}
             type=raw,value=latest
 
       - name: Build and push Docker image
@@ -67,11 +66,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-      # Generate Artifact Attestation
-      # - name: Generate artifact attestation
-      #   uses: actions/attest-build-provenance@v1
-      #   with:
-      #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      #     subject-digest: ${{ steps.push.outputs.digest }}
-      #     push-to-registry: true
