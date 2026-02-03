@@ -20,6 +20,7 @@ WORKDIR /cybermp
 
 COPY ./linux-build /cybermp
 RUN chmod +x /cybermp/cybermp-server
+RUN chmod +x /cybermp/bin/crashpad-handler
 
 COPY ./server.toml /cybermp/server.toml
 RUN mkdir /cybermp/resources
